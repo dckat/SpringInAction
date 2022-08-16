@@ -32,3 +32,8 @@
     * th:each: 컬렉션의 반복처리, 각 요소를 하나씩 HTML로 표현
 
 ## 2.2. 폼 제출 처리하기
+ * 폼 제출 시 → 브라우저가 모든 데이터 수집 → 서버에 HTTP POST 요청
+ * DesignTacoController
+   * 디자인 폼 제출 시 → 인자로 전달되는 Taco 객체의 속성과 바인딩
+   * 체크박스 요소: ingredients / 텍스트 입력 요소: name
+   * redirect: 리디렉션(변경된 경로로 재접속) 뷰를 반환
