@@ -86,9 +86,19 @@
    3) JSP (톰캣이나 제티 서블릿 컨테이너에서 제공)
    4) Mustache (spring-boot-starter-mustache)
    5) Thymeleaf (spring-boot-starter-thymeleaf)
- ※ JSP 선택 시 고려 사항
- * 애플리케이션을 WAR 파일로 생성
-   * 이유: 내장된 톰캣과 자바 서블릿 컨테이너는 /WEB-INF에서 JSP 코드 탐색 → JAR 파일 생성시 요구사항 충족 X
+ * JSP vs Thymeleaf
+   * JSP (Java Server Page)
+     * 서블릿으로 변환되어 실행되는 뷰 템플릿 라이브러리
+     * HTML 페이지에 자바 코드를 삽입하여 동적인 웹 페이지 생성
+     * 고려사항: 애플리케이션을 WAR 파일로 생성
+       * 이유: 내장된 톰캣. 서블릿 컨테이너는 /WEB-INF에서 탐색 → JAR 파일 생성 시 요구사항 충족 X
+     * 장점: 뷰 템플릿 작업 시 HTML에서 바로 사용 가능
+     * 단점: 로직이 복잡할 경우 가독성 저하
+   * Thymeleaf
+     * HTML, XML 등을 독립적인 환경에서 사용할 수 있는 자바 템플릿
+     * 파싱하여 분석후 정해진 위치에 데이터를 치환하여 웹 페이지 생성
+     * 장점: 톰캣 실행 없이 오프라인에서 수정작업 가능, 페이지의 프로토타입 제공 가능
+     * 단점: JSP에 비해 속도가 떨어짐 [(성능분석 참고자료)](https://dzone.com/articles/modern-type-safe-template-engines-part-2)
  * 템플릿 캐싱
    * 템플릿은 최초 사용 시 한번만 파싱 → 파싱 후 캐시에 저장
 
