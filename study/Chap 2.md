@@ -72,3 +72,26 @@
    * class 속성: 에러의 명칭을 지정
    * th:if 속성: 해당 span을 보여줄지 결정 (hasErrors 메소드를 활용하여 에러 검사하여 있으면 span을 보여줌)
    * th:errors 속성: 사전에 지정된 메시지를 검사에러 메시지로 치환
+
+## 2.4. 뷰 컨트롤러로 작업하기
+ * 뷰 컨트롤러: 뷰에 요청을 전달하는 일만 담당하는 컨트롤러 (사용자 입력, 데이터 처리 수행 X)
+ * 주요 인터페이스 및 메소드
+   * WebMvcConfigurer: 스프링 MVC 구성 메소드 정의 인터페이스
+   * addViewControllers: 하나 이상의 뷰 컨트롤러 등록 메소드 (WebMvcConfigurer 인터페이스 메소드 오버라이딩)
+
+## 2.5. 뷰 템플릿 라이브러리
+ * 스프링 부트 지원 템플릿.의존성
+   1) FreeMarker (spring-boot-starter-freemarker)
+   2) Groovy 템플릿 (spring-boot-starter-groovy-templates)
+   3) JSP (톰캣이나 제티 서블릿 컨테이너에서 제공)
+   4) Mustache (spring-boot-starter-mustache)
+   5) Thymeleaf (spring-boot-starter-thymeleaf)
+ ※ JSP 선택 시 고려 사항
+ * 애플리케이션을 WAR 파일로 생성
+   * 이유: 내장된 톰캣과 자바 서블릿 컨테이너는 /WEB-INF에서 JSP 코드 탐색 → JAR 파일 생성시 요구사항 충족 X
+ * 템플릿 캐싱
+   * 템플릿은 최초 사용 시 한번만 파싱 → 파싱 후 캐시에 저장
+
+     (장점) 요청을 처리할 때 마다 파싱 수행 X → 성능 향상
+     
+     (단점) 캐싱된 페이지를 항상 보여주므로 수정된 내용을 즉각적으로 반영 X (캐싱의 비활성화 별도로 필요)
