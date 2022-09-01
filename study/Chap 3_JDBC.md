@@ -3,7 +3,7 @@
 * JDBC(Java Database Connectivity)
   * 정의: 자바에서 데이터베이스에 접속이 가능하도록 하는 API
   * JDBC 주요 구성
-    ![구성도](../../../Downloads/그림.png)
+    ![그림](https://user-images.githubusercontent.com/19167273/187698449-443e8558-7fcc-4183-bb3b-9b838fda8c1b.png)
     * JDBC 드라이버
       * DBMS와 통신을 담당하는 자바 클래스
       * DBMS에 따라 맞는 드라이버가 다름
