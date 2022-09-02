@@ -3,15 +3,13 @@ package tacos.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import tacos.domain.Order;
 import tacos.repository.OrderRepository;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -28,6 +26,16 @@ public class OrderController {
     @GetMapping("/current")
     public String orderForm() {
         return "orderForm";
+    }
+
+    @GetMapping("/{deliveryZip}")
+    public String getOrder(@PathVariable String deliveryZip) {
+        List<Order> orderList = orderRepository.findByDeliveryZip(deliveryZip);
+
+        for (Order order : orderList) {
+            System.out.println(order);
+        }
+        return "test";
     }
 
     @PostMapping
