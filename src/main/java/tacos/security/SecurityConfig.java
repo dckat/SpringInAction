@@ -27,24 +27,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /*
-    @Bean
-    public UserDetailsService users() {
-        UserDetails user1 = User.builder()
-                .username("user1")
-                .password("{noop}password1")
-                .roles("USER")
-                .build();
-
-        UserDetails user2 = User.builder()
-                .username("user2")
-                .password("{noop}password2")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    } */
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
