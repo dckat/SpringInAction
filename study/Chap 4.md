@@ -118,7 +118,7 @@
      * 단점: 사용자의 추가 및 변경이 어려움 (코드를 수시로 변경하여 빌드하고 배포 필요)
  
  * JDBC 기반 사용자 스토어
-   * 사용자 정보는 관계형 DB로 유지.관리가 대다수 -> JDBC를 사용하여 시큐리티 구성
+   * 사용자 정보는 관계형 DB로 유지.관리가 대다수 → JDBC를 사용하여 시큐리티 구성
    * 데이터 엑세스를 위한 dataSource() 메소드 호출 (Autowired 어노테이션 지정 시 DataSource 자동 지정)
    * 사용자 정보 탐색 시 시큐리티 내부에서 아래의 쿼리 수행
    ```
@@ -152,4 +152,23 @@
        1) BCryptPasswordEncoder: bcrypt를 해싱 암호화
        2) NoOpPasswordEncoder: 암호화를 하지 않음
        3) Pbkdf2PasswordEncoder: PBKDF2를 암호화
- 
+ * LDAP 기반 사용자 스토어
+   * LDAP(Lightweight Directory Access Protocol)
+     * 네트워크 상에서 조직이나 개인, 파일, 디바이스 등을 찾아볼 수 있게 해주는 프로토콜
+     * TCP/IP 위에서 운용되는 프로토콜
+       
+       ※ DAP: OSI계층 전체의 프로토콜을 지원 → 네트워크의 자원 소비가 많음
+     * LDAP 모델
+       1) information 모델: 데이터의 형태와 데이터를 디렉토리 구조로 정보를 저장하는 방식
+       2) Naming 모델: 디렉토리 구조에서 각 Entry의 식별 및 구성에 대한 설명
+       3) Functional 모델: 디렉토리에서 작업하는 명령
+       4) Security 모델: 접근하는 사용자 인증과 데이터 접근 권한을 통한 서비스 보호
+   * 스프링 시큐리티에서의 LDAP 구성
+     * 원격 서버: contextSource() 메소드로 LDAP 서버의 위치 지정
+     * 내장된 서버: spring에서 제공되는 ldap 의존성을 추가
+   * 내장된 서버에서의 LDAP 접근
+     * LDIF(LDAP Data Interchange Format): LDAP 데이터를 나타내는 표준화된 방법을 정의한 텍스트 파일
+     * 스프링에서 ldif() 메소드를 통해 구현한 LDIF 파일위치 접근 (메소드 미사용시 classpath에서 탐색)
+   * LDAP 기반 사용자 스토어를 위한 주요 메소드
+     * userSearchFilter, groupSearchFilter: 사용자와 그룹 검색
+     * userSearchBase, groupSearchBase: 사용자/그룹을 찾기 위한 기준점 쿼리 지정 (default: root)
