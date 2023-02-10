@@ -84,30 +84,31 @@
 
  * 인메모리 사용자 스토어
    * 사용자 정보를 코드 내부에 정의하여 유지.관리하는 기법
-   * 5.7 이전
-   ```
-   @Override
-   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("user1")
-            .password("{noop}password1")
-            .authorities("ROLE_USER");
-   }
-   ```
-   * 5.7 이후
-   ```
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user1")
-                .password("{noop}password1")
-                .authorities("ROLE_USER")
-                .and()
-                .withUser("user2")
-                .password("{noop}password2")
-                .authorities("ROLE_USER");
-    }
-   ```
+   * 구현
+     * 5.7 이전
+     ```
+     @Override
+     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+          auth.inMemoryAuthentication()
+              .withUser("user1")
+              .password("{noop}password1")
+              .authorities("ROLE_USER");
+     }
+     ```
+     * 5.7 이후
+     ```
+     @Autowired
+     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+         auth.inMemoryAuthentication()
+                 .withUser("user1")
+                 .password("{noop}password1")
+                 .authorities("ROLE_USER")
+                 .and()
+                 .withUser("user2")
+                 .password("{noop}password2")
+                 .authorities("ROLE_USER");
+     }
+     ```
    * 주요 메소드 및 클래스
      * AuthenticationManagerBuilder: 인증 명세를 구성하기 위한 빌더클래스
      * inMemoryAuthentication: 인메모리 사용자 스토어를 위한 메소드
@@ -115,3 +116,40 @@
    * 장.단점
      * 장점: 테스트 목적이나 간단한 애플리케이션에 사용하기 편리
      * 단점: 사용자의 추가 및 변경이 어려움 (코드를 수시로 변경하여 빌드하고 배포 필요)
+ 
+ * JDBC 기반 사용자 스토어
+   * 사용자 정보는 관계형 DB로 유지.관리가 대다수 -> JDBC를 사용하여 시큐리티 구성
+   * 데이터 엑세스를 위한 dataSource() 메소드 호출 (Autowired 어노테이션 지정 시 DataSource 자동 지정)
+   * 사용자 정보 탐색 시 시큐리티 내부에서 아래의 쿼리 수행
+   ```
+   public static final String DEF_USERS_BY_USERNAME_QUERY = 
+        "select username, password, enabled " +
+        "from users " +
+        "where username = ?";
+   public static final String DEF_AUTHORITIES_BY_USERNAME_QUERY =
+        "select username, authority " +
+        "from authorities " +
+        "where username = ?";
+   public static final DEF_GROUP_AUTHORITIES_BY_USERNAME_QUERY =
+        "select g.id, g.group_name, ga.authority " +
+        "from authorities g, group_members gm, group_authorites ga " +
+        "where gm.username = ? " +
+        "and g.id = ga.group_id " +
+        "and g.id = gm.group_id";
+   ```
+   * 스프링 시큐리티에서 내부적으로 생성되는 테이블
+     * user: 사용자 정보
+     * authorities: 권한 정보
+     * group_member: 그룹 사용자
+     * group_authorities: 그룹의 권한
+   * 스프링 시큐리티의 기본 SQL을 대체 시 매개변수는 username 하나여야 함
+     ```
+     ...usersByUsernameQuery("select ... from ... where username=?");
+     ```
+   ※ 패스워드의 암호화
+     * 스프링 시큐리티 5 버전부터 의무적으로 PasswordEncoder로 암호화 의무
+     * PasswordEncoder 인터페이스를 구현한 클래스
+       1) BCryptPasswordEncoder: bcrypt를 해싱 암호화
+       2) NoOpPasswordEncoder: 암호화를 하지 않음
+       3) Pbkdf2PasswordEncoder: PBKDF2를 암호화
+ 
