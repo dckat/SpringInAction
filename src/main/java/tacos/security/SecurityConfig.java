@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.ldap.server.ApacheDSContainer;
+import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
@@ -38,6 +41,7 @@ public class SecurityConfig {
                 .authorities("ROLE_USER");
     } */
 
+    /* JDBC 사용자 스토어
     @Autowired
     DataSource dataSource;
 
@@ -52,5 +56,22 @@ public class SecurityConfig {
                         "select username, authority from authorities " +
                                 "where username=?")
                 .passwordEncoder(new NoEncodingPasswordEncoder());
-    }
+    } */
+
+    /* LDAP 사용자 스토어
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.ldapAuthentication()
+                .userSearchBase("ou=people")
+                .userSearchFilter("(uid={0})")
+                .groupSearchBase("ou=groups")
+                .groupSearchFilter("member={0}")
+                .contextSource()
+                .root("dc=tacocloud,dc=com")
+                .ldif("classpath:users.ldif")
+                .and()
+                .passwordCompare()
+                .passwordEncoder(new BCryptPasswordEncoder())
+                .passwordAttribute("userPasscode");
+    } */
 }
