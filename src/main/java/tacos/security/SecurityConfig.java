@@ -19,6 +19,9 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private AuthenticationManagerBuilder authenticationManagerBuilder;
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -36,12 +39,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(userDetailsService)
+    public void configure() throws Exception{
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
                 .passwordEncoder(encoder());
     }
-
 
     /* 인메모리 사용자 스토어
     @Autowired
