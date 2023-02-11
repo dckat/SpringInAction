@@ -24,6 +24,9 @@ public class Order {
 
     private Date createdAt;
 
+    @ManyToOne
+    private User user;
+
     @NotBlank(message="Name is required")
     private String deliveryName;
 
