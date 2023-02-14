@@ -98,7 +98,7 @@
      * 5.7 이후
      ```
      @Autowired
-     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+     public void configure(AuthenticationManagerBuilder auth) throws Exception {
          auth.inMemoryAuthentication()
                  .withUser("user1")
                  .password("{noop}password1")
@@ -172,3 +172,128 @@
    * LDAP 기반 사용자 스토어를 위한 주요 메소드
      * userSearchFilter, groupSearchFilter: 사용자와 그룹 검색
      * userSearchBase, groupSearchBase: 사용자/그룹을 찾기 위한 기준점 쿼리 지정 (default: root)
+ * 사용자 인증 커스터마이징
+   * 스프링 시큐리티 내장스토어(인메모리, JDBC, LDAP)
+     * 장점: 사용에 편리하여 일반적인 용도로 사용에 좋음
+     * 단점: 사용자를 인증하는데 필요한 정보(이름.비밀번호.활성화 여부)만 보유 → 더 자세한 사용자 정보가 필요한 경우가 발생
+   * JPA 기반 사용자 커스터마이징을 위한 단계
+     1) 사용자 도메인 객체와 리퍼지터리 정의
+     2) 사용자 명세 서비스 생성
+     3) 사용자 등록 컨트롤러.뷰 구현
+   * 사용자 도메인 객체 정의
+     * UserDetails: 스프링 시큐리티에서 제공하는 사용자 정보 인터페이스
+       * getAuthorities: 사용자에게 부여된 권한을 저장한 컬렉션 반환 메소드
+       * is..Expired: 사용자 계정의 활성화 여부 반환 메소드
+   * 사용자 명세 서비스 생성
+     * UserDetailsService: 사용자 명세 서비스 구현을 위한 인터페이스
+       * 정의
+         ```
+         public interface UserDetailsService {
+          UserDetails loadUserByUsername(String username)
+              throws UsernameNotFoundException;
+         ```
+***
+## 4.3. 웹 요청 보안 처리하기
+ * configure(HttpSecurity): 스프링 보안규칙을 구성하기 위한 메소드
+ * HttpSecurity를 사용해서 구성할 수 있는 것
+   1) HTTP 요청처리를 허용하기 위한 보안 조건 구성
+   2) 커스텀 로그인 페이지 구성
+   3) 로그아웃이 가능
+   4) CSRF 공격으로 부터 보호
+ * 웹 요청 보안 처리
+   * configure 메소드 구성
+   ```
+   @Bean
+   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+       http
+           .authorizeRequests()
+           .antMatchers("/design", "/orders")
+           .access("hasRole('ROLE_USER')")
+           .antMatchers("/", "/**").access("permitAll");
+       return http.build();
+   }
+   ```
+    * authorizeRequests: URL 경로와 패턴 및 해당 경로의 보안 요구사항 구성
+    * antMatchers: 지정된 경로와 패턴 일치를 검사 → 우선적으로 처리되어야 함
+      
+      (순서를 바꿀 시 모든 요청의 사용자에게 permit 적용)
+    * 요청 경로가 보안처리 되는 방법을 정의하는 메소드
+      * hasRole(String): 지정된 역할을 사용자가 가지고 있으면 접근 허용
+      * permitAll(): 무조건 접근 허용 / denyAll(): 무조건 접근 거부
+      * access(String): 인자로 전달된 SpEL 표현식이 true면 접근 허용
+      * anonymous(): 익명의 사용자에게 접근 허용
+      * authenticated(): 익명이 아닌 사용자로 인증인 경우 접근 허용
+      * rememberMe(): 이전 로그인정보를 쿠키에 저장 후 일정 기간 내에 접근이 저장된 정보로 재로그인시 접근 허용
+    * 스프링 시큐리티에서 확장된 SpEL(스프링 표현식 언어)
+      * authentication: 해당 사용자의 인증 객체
+      * hasRole(역할): 지정된 역할을 사용자가 가지고 있으면 true
+      * permitAll: 항상 true / denyAll: 항상 false
+      * isAnonymous(): 익명 사용자이면 true
+      * isAuthenticated(): 익명이 아닌 사용자로 인증되면 true
+ * CSRF 공격 방어
+   * CSRF(Cross-Site Request Forgey)
+     * 웹사이트에 악의적인 코드를 삽입하고 이를 폼으로 제출하여 공격에 노출되도록 하는 보안 공격
+       ![](../../../Downloads/Csrf1.jpg)
+       ex) SNS 계정에서 발생되는 피싱사이트 광고: 피싱사이트에 글쓰기 폼 삽입 후 특정사용자의 작성글에 등록
+   * 스프링 시큐리티에서 CSRF 구현 및 처리단계
+     1) 공격방어를 위해 폼의 숨김 필드에 CSRF 토큰 생성
+     2) 폼 제출 시 데이터와 함께 토큰도 서버에 전송
+     3) 서버에서 전송된 토큰을 원래 생성된 토큰과 비교
+     4) 토큰이 일치할 시 해당 요청 처리 허용 (일치하지 않을 시 악의적인 웹사이트에서 제출된 것으로 간주)
+***
+## 4.4. 사용자 인지하기
+ * 사용자 인지를 위해 주로 사용되는 방법
+   * Principal 객체를 컨트롤러 메소드에 주입
+   * Authentication 객체를 컨트롤러 메소드에 주입
+   * SecurityContextHolder 활용 보안 컨텍스트 획득
+   * AuthenticationPrincipal 어노테이션을 메소드에 적용
+ * Principal 객체를 활용한 사용자 인지
+   * Principal 객체: 로그인한 사용자가 누구인지를 알기 위해 사용하는 객체 
+   ```
+   public String processOrder(@Valid Order order, Errors errors, 
+      SessionStatus sessionStatus, Principal principal) {
+    
+      ...
+      User user = userRepository.findByUsername(principal.getName());
+      order.setUser(user);
+      ...
+   }
+   ```
+   * 보안과 관련없는 코드가(findByUsername 메소드) 혼재한다는 문제점 존재
+ * Authentication 객체를 활용한 사용자 인지
+   ```
+   public String processOrder(@Valid Order order, Errors errors, 
+      SessionStatus sessionStatus, Authentication authentication) {
+    
+      ...
+      User user = (User) authentication.getPrincipal();
+      order.setUser(user);
+      ...
+   }
+   ```
+   * getPrincipal 메소드를 활용하여 Principal 객체 반환 (반환 타입: Object)
+   * 사용자 클래스로 별도의 캐스팅 작업이 필요
+ * SecurityContextHolder 활용 보안 컨텍스트 획득 후 사용자 인지
+   ```
+   Authentication authentication = 
+      SecurityContextHolder.getContext().getAuthentication();
+   User user = (User) authentication.getPrincipal();
+   ```
+   * 보안 특정 코드가 다른 코드에 비해 많음
+   * 해당 보안 컨텍스트를 애플리케이션 어느곳에서든 사용가능
+ * AuthenticationPrincipal 어노테이션을 메소드에 주입
+   * AuthenticationPrincipal: 인증된 사용자 정보를 가져오기 위한 어노테이션
+   * 구현 코드
+   ```
+   public String processOrder(@Valid Order order, Errors errors, 
+      SessionStatus sessionStatus,
+      @AuthenticationPrincipal User user) {
+    
+      ...
+      order.setUser(user);
+      ...
+   }   
+   ```
+   * 별도의 타입변환 없이 사용자 정보를 가져올 수 있음
+   * 특정한 보안 코드만 가질 수 있음
+***
