@@ -41,3 +41,13 @@
     * 언더바 대신 하이픈을 사용
     * 파일 확장자는 URI에 포함 X
     * Method는 URI에 포함 X
+* 스프링 MVC HTTP 요청-처리 어노테이션
+
+|어노테이션|HTTP Method|용도|
+|------|-----------|------|
+|GetMapping|HTTP GET 요청|리소스 데이터 읽기|
+|PostMapping|HTTP POST 요청|리소스 생성하기|
+|PutMapping|HTTP PUT 요청|리소스 변경하기|
+|PatchMapping|HTTP PATCH 요청|리소스 변경하기|
+|DeleteMapping|HTTP DELETE 요청|리소스 삭제하기|
+|RequestMapping|다목적 요청 처리||
