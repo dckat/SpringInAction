@@ -17,7 +17,6 @@ import tacos.assembler.TacoResourceAssembler;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
 @RequestMapping(path="/design", produces="application/json")
 @CrossOrigin(origins="*")
 public class DesignTacoController {
