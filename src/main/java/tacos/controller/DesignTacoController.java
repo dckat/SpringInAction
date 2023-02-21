@@ -49,7 +49,6 @@ public class DesignTacoController {
 
         recentResources.add(
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(DesignTacoController.class).recentTacos())
-                        .slash("recent")
                         .withRel("recents"));
 
         return recentResources;
