@@ -3,12 +3,18 @@ package tacos.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tacos.domain.Taco;
 import tacos.repository.TacoRepository;
+import tacos.resource.TacoResource;
+import tacos.assembler.TacoResourceAssembler;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,11 +32,27 @@ public class DesignTacoController {
         this.tacoRepository = tacoRepository;
     }
 
+    /*
     @GetMapping("/recent")
     public Iterable<Taco> recentTacos() {
         PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
 
         return tacoRepository.findAll(page).getContent();
+    } */
+
+    @GetMapping("/recent")
+    public CollectionModel<TacoResource> recentTacos() {
+        PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
+
+        List<Taco> tacos = tacoRepository.findAll(page).getContent();
+        CollectionModel<TacoResource> recentResources = new TacoResourceAssembler().toCollectionModel(tacos);
+
+        recentResources.add(
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(DesignTacoController.class).recentTacos())
+                        .slash("recent")
+                        .withRel("recents"));
+
+        return recentResources;
     }
 
     @GetMapping("/{id}")
