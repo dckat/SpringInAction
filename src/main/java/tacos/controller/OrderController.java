@@ -1,21 +1,12 @@
 package tacos.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import tacos.domain.Order;
-import tacos.domain.User;
-import tacos.props.OrderProps;
 import tacos.repository.OrderRepository;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -25,67 +16,48 @@ public class OrderController {
 
     private OrderRepository orderRepository;
 
-    private OrderProps orderProps;
-
-    public OrderController(OrderRepository orderRepository, OrderProps orderProps) {
+    public OrderController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.orderProps = orderProps;
     }
 
+    @PatchMapping(path="/{orderId}", consumes="application/json")
+    public Order patchOrder(@PathVariable("orderId") Long orderId,
+                            @RequestBody Order patch) {
+        Order order = orderRepository.findById(orderId).get();
 
-    @GetMapping("/current")
-    public String orderForm(@AuthenticationPrincipal User user,
-                            @ModelAttribute Order order) {
-        if (order.getDeliveryName() == null) {
-            order.setDeliveryName(user.getFullname());
+        if (patch.getDeliveryName() != null) {
+            order.setDeliveryName(patch.getDeliveryName());
         }
-        if (order.getDeliveryStreet() == null) {
-            order.setDeliveryStreet(user.getStreet());
+        if (patch.getDeliveryStreet() != null) {
+            order.setDeliveryStreet(patch.getDeliveryStreet());
         }
-        if (order.getDeliveryCity() == null) {
-            order.setDeliveryCity(user.getCity());
+        if (patch.getDeliveryCity() != null) {
+            order.setDeliveryCity(patch.getDeliveryCity());
         }
-        if (order.getDeliveryState() == null) {
-            order.setDeliveryState(user.getState());
+        if (patch.getDeliveryState() != null) {
+            order.setDeliveryState(patch.getDeliveryState());
         }
-        if (order.getDeliveryZip() == null) {
-            order.setDeliveryZip(user.getZip());
+        if (patch.getDeliveryZip() != null) {
+            order.setDeliveryZip(patch.getDeliveryZip());
+        }
+        if (patch.getCcNumber() != null) {
+            order.setCcNumber(patch.getCcNumber());
+        }
+        if (patch.getCcExpiration() != null) {
+            order.setCcExpiration(patch.getCcExpiration());
+        }
+        if (patch.getCcCVV() != null) {
+            order.setCcCVV(patch.getCcCVV());
         }
 
-        return "orderForm";
+        return orderRepository.save(order);
     }
 
-    @GetMapping("/{deliveryZip}")
-    public String getOrder(@PathVariable String deliveryZip) {
-        List<Order> orderList = orderRepository.findByDeliveryZip(deliveryZip);
-
-        for (Order order : orderList) {
-            System.out.println(order);
-        }
-        return "test";
-    }
-
-    @GetMapping
-    public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
-        Pageable pageable = PageRequest.of(0, orderProps.getPageSize());
-
-        model.addAttribute("orders",
-                orderRepository.findByUserOrderByCreatedAtDesc(user, pageable));
-
-        return "orderList";
-    }
-
-    @PostMapping
-    public String processOrder(@Valid Order order, Errors errors, SessionStatus sessionStatus,
-                               @AuthenticationPrincipal User user) {
-        if (errors.hasErrors()) {
-            return "orderForm";
-        }
-
-        order.setUser(user);
-
-        orderRepository.save(order);
-        sessionStatus.setComplete();
-        return "redirect:/";
+    @DeleteMapping("/{orderId}")
+    @ResponseStatus(code= HttpStatus.NO_CONTENT)
+    public void deleteOrder(@PathVariable("orderId") Long orderId) {
+        try {
+            orderRepository.deleteById(orderId);
+        } catch (EmptyResultDataAccessException e) {}
     }
 }
