@@ -1,4 +1,6 @@
-package tacos;
+package tacos.send;
+
+import tacos.Order;
 
 public interface OrderMessagingService {
 
