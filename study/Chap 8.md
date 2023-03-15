@@ -194,3 +194,42 @@
     * 메시지가 도착할 때까지 대기하는 수동적 컴포넌트
     * JmsListener: 메시지 리스너를 지정하기 위한 어노테이션
 ***
+## 8.2. RabbitMQ와 AMQP
+* AMQP (Advanced Message Queueing Protocol)
+  * 메시지 지향 미들웨어를 위한 개방형 표준 응용 계층 프로토콜
+  * 기존 MQ → 플랫폼에 종속적인 요소로 메시지 교환을 위한 브릿지 이용 또는 시스템 통일 필요
+    * 문제점: 브릿지 이용으로 인한 속도 저하 발생. 시스템 통일로 인한 불편함 발생
+  * 서로 다른 시스템 간 효율적인 메시지 교환을 위하여 설계
+  * AMQP가 충족해야할 조건
+    1) 모든 브로커들은 같은 방식으로 동작
+    2) 모든 클라이언트들은 같은 방식으로 동작
+    3) 네트워크 상으로 전송되는 명령어들의 표준화
+  * AMQP를 위한 주요 컴포넌트
+  ![다운로드.png](..%2F..%2F..%2FDownloads%2F%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.png)
+    * Exchange
+      * Publisher 부터 수신한 메시지를 바인딩된 Queue 또는 다른 Exchange로 분배
+      * 각 Exchange는 바인딩을 사용해서 상위 Exchange에 바인드
+    * Queue
+      * 메모리나 디스크에 메시지 저장. Consumer에게 메시지를 전달
+  * Exchange 타입
+    * Direct Exchange
+      * 메시지의 라우팅 키를 queue에 1:N으로 매칭
+      * 일반적으로 queue의 이름을 바인딩하고자 하는 라우팅키와 동일하게 작성
+      ![img (1).png](..%2F..%2F..%2FDownloads%2Fimg%20%281%29.png)
+    * Topic Exchange
+      * 와일드카드 활용 메시지를 큐에 매칭
+      * 와일드카드
+        * *(start): 하나의 단어
+        * #(hash): 0개 이상의 단어
+        * .: 단어 구분
+      ![img.png](..%2F..%2F..%2FDownloads%2Fimg.png)
+    * Fanout Exchange
+      * 모든 메시지를 모든 큐로 라우팅
+      ![img (2).png](..%2F..%2F..%2FDownloads%2Fimg%20%282%29.png)
+    * Headers Exchange
+      * Key-Value로 정의된 헤더에 의해 라우팅 결정
+      * x-match 값에 의해 바인딩 조건이 모두 충족인지 일부 충족인지를 결정
+        * x-match="all": 바인딩 조건 모두 충족
+        * x-match="any": 바인딩 조건 중 하나만 충족
+      ![img (3).png](..%2F..%2F..%2FDownloads%2Fimg%20%283%29.png)
+***
