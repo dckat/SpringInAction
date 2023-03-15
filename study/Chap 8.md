@@ -232,4 +232,47 @@
         * x-match="all": 바인딩 조건 모두 충족
         * x-match="any": 바인딩 조건 중 하나만 충족
       ![img (3)](https://user-images.githubusercontent.com/19167273/225232249-02eddfd3-a266-4ad5-afc5-577ceb77d21b.png)
+* RabbitMQ
+  * AMQP를 구현한 오픈소스 메시지 브로커
+  * JMS vs RabbitMQ
+    * JMS: 메시지의 수신자가 가져갈 도착지의 이름을 주소로 사용
+    * RabbitMQ: 리스닝 하는 큐와 exchange 이름과 라우팅 키를 주소로 사용
+  * RabbitMQ의 exchange 종류 (교재 기반)
+    * 기본(default): 브로커가 자동으로 생성한 exchange. 라우팅 키와 이름이 같은 큐로 전달. 모든 큐와 자동으로 연결
+    * 디렉트(direct): 바인딩 키가 메시지의 라우팅 키와 같은 큐에 메시지 전달
+    * 토픽(topic): 와일드 카드를 포함하는 바인딩 키가 메시지의 라우팅 키와 일치하는 하나 이상 큐에 메시지 전달
+    * 팬아웃(Fanout): 바인딩 키.라우팅 키에 상관없이 모두 연결된 큐에 메시지 전달
+    * 헤더(Header): 토픽과 유사. 라우팅 키 대신 헤더 값을 기반
+    * 데드 레터(Dead Letter): 어떤 exchange-queue 바인딩과도 일치하지 않는 모든 메시지를 보관
+* RabbitMQ의 스프링 구현
+  * 의존성 추가
+   ```
+   <!-- ActiveMQ 의존성 -->
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-ampq</artifactId>
+   </dependency>
+  ```
+  * RabbitMQ 브로커 위치와 인증정보 구성 속성
+    * ```spring.rabbitmq.addresses```: 쉼표로 구성된 리스트 형태의 RabbitMQ 브로커 주소
+    * ```spring.rabbitmq.host```: 브로커 호스트 (default: localhost)
+    * ```spring.rabbitmq.port```: 브로커 포트 (default: 5672)
+    * ```spring.rabbitmq.username```: 브로커를 사용하기 위한 사용자 이름
+    * ```spring.rabbitmq.password```: 브로커를 사용하기 위한 사용자 패스워드
+* RabbitTemplate 활용 메시지 전송
+  * RabbitTemplate: JmsTemplate과 유사하게 RabbitMQ 메시징을 위한 스프링 지원
+  * 주요 메소드
+    * send: 원시 메시지 전송
+    * convertAndSend: 변환된 메시지 전송 / 변환 후 후처리 되는 메시지 전송
+    * RabbitTemplate 활용 시 exchange와 라우팅 키의 형태로 메시지 전송 → 이들을 메소드 인자로 받음
+  * RabbitMQ에서 활용되는 메시지 변환기
+    * Jackson2JsonMessageConverter: Jackson2JSONProcessor 사용 객체를 JSON으로 상호 변환
+    * MarshallingMessageConverter: 스프링 Marshaller/Unmarshaller 활용 변환
+    * SerializerMessageConverter: 스프링 Serializer/Deserializer 활용 String과 객체 변환
+    * SimpleMessageConverter: String, byte 배열, Serializable 타입 변환
+    * ContentTypeDelegatingMessageConverter: contentType 헤더를 기반으로 다른 메시지 변환기에 변환 위임
+* RabbitTemplate 활용 메시지 수신
+  * 수신 모델 (JmsTemplate과 동일)
+    * 풀 모델: RabbitTemplate.receive 메소드를 활용하여 메시지 수신
+    * 푸시 모델: 리스너(RabbitListener)활용 지정된 메소드로 메시지를 푸싱
 ***
