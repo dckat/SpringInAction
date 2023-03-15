@@ -205,7 +205,7 @@
     2) 모든 클라이언트들은 같은 방식으로 동작
     3) 네트워크 상으로 전송되는 명령어들의 표준화
   * AMQP를 위한 주요 컴포넌트
-  ![다운로드.png](..%2F..%2F..%2FDownloads%2F%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.png)
+    ![다운로드](https://user-images.githubusercontent.com/19167273/225232119-409b48b3-a5e8-486e-be9c-42f88e595451.png)
     * Exchange
       * Publisher 부터 수신한 메시지를 바인딩된 Queue 또는 다른 Exchange로 분배
       * 각 Exchange는 바인딩을 사용해서 상위 Exchange에 바인드
@@ -215,21 +215,21 @@
     * Direct Exchange
       * 메시지의 라우팅 키를 queue에 1:N으로 매칭
       * 일반적으로 queue의 이름을 바인딩하고자 하는 라우팅키와 동일하게 작성
-      ![img (1).png](..%2F..%2F..%2FDownloads%2Fimg%20%281%29.png)
+      ![img (1)](https://user-images.githubusercontent.com/19167273/225232158-c2945d49-5cda-4532-9163-4f2008935674.png)
     * Topic Exchange
       * 와일드카드 활용 메시지를 큐에 매칭
       * 와일드카드
         * *(start): 하나의 단어
         * #(hash): 0개 이상의 단어
         * .: 단어 구분
-      ![img.png](..%2F..%2F..%2FDownloads%2Fimg.png)
+      ![img](https://user-images.githubusercontent.com/19167273/225232192-3d484a54-be05-4ce4-b8e8-66aa53051206.png)
     * Fanout Exchange
       * 모든 메시지를 모든 큐로 라우팅
-      ![img (2).png](..%2F..%2F..%2FDownloads%2Fimg%20%282%29.png)
+      ![img (2)](https://user-images.githubusercontent.com/19167273/225232228-bbc59393-72bf-467b-b40e-4971a34c46f7.png)
     * Headers Exchange
       * Key-Value로 정의된 헤더에 의해 라우팅 결정
       * x-match 값에 의해 바인딩 조건이 모두 충족인지 일부 충족인지를 결정
         * x-match="all": 바인딩 조건 모두 충족
         * x-match="any": 바인딩 조건 중 하나만 충족
-      ![img (3).png](..%2F..%2F..%2FDownloads%2Fimg%20%283%29.png)
+      ![img (3)](https://user-images.githubusercontent.com/19167273/225232249-02eddfd3-a266-4ad5-afc5-577ceb77d21b.png)
 ***
