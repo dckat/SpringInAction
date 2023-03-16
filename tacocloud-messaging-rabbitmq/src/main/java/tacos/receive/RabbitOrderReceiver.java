@@ -1,6 +1,5 @@
 package tacos.receive;
 
-import ch.qos.logback.classic.pattern.MessageConverter;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
