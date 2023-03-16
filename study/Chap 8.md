@@ -247,7 +247,6 @@
 * RabbitMQ의 스프링 구현
   * 의존성 추가
    ```
-   <!-- ActiveMQ 의존성 -->
    <dependency>
      <groupId>org.springframework.boot</groupId>
      <artifactId>spring-boot-starter-ampq</artifactId>
@@ -275,4 +274,46 @@
   * 수신 모델 (JmsTemplate과 동일)
     * 풀 모델: RabbitTemplate.receive 메소드를 활용하여 메시지 수신
     * 푸시 모델: 리스너(RabbitListener)활용 지정된 메소드로 메시지를 푸싱
+***
+## 8.3. Kafka (카프카)
+* Kafka
+  * Apache에서 스칼라로 개발한 오픈 소스 메시지 브로커
+  * 특징
+    * Publisher Subscriber 모델: 데이터 큐를 중간에 두고 데이터를 생산하고 소비
+    * 고가용성: 클러스터 작동으로 Fault-tolerant 고가용성 서비스 제공 및 빠른 데이터 처리 가능
+    * 확장성: 서버를 수평적으로 늘려 안정성 및 성능을 향상
+    * 디스크 순차 저장 및 처리: 순차적 저장으로 유실 문제 X, 디스크 I/O 감소로 인한 성능 증가
+    * 분산 처리: 여러 파티션을 서버로 분산시켜 나누어 처리 → 메시지의 빠른 처리 가능
+  * 사용 이유
+    * 병렬처리에 의한 데이터 처리율 향상
+    * 데이터 유실 방지
+    * 클러스터링에 의한 고가용 서비스
+  * 카프카 클러스터 구조
+    * 브로커: Kafka 서버 의미
+    * 토픽: 카프카 클러스터에 데이터를 관리할 시 기준. 하나의 토픽은 하나 이상의 클러스터 보유
+    * 파티션: 각 토픽 당 데이터를 분산 처리하는 단위
+* 스프링에서의 Kafka 설정
+  * 의존성
+  ```
+  <dependency>
+     <groupId>org.springframework.kafka</groupId>
+     <artifactId>spring-kafka</artifactId>
+  </dependency>
+  ```
+  * 카프카 구성-속성
+    * ```spring.kafka.bootstrap-servers```: 초기 연결에 사용되는 하나 이상의 카프카 서버들의 위치
+    * ```spring.kafka.template.default-topic```: 기본 토픽
+* KafkaTemplate 활용 메시지 전송
+  * 메소드: send. sendDefault
+  * JMS. RabbitMQ와 달리 convertAndSend 존재 X
+    * 이유: KafkaTemplate는 제네릭 타입 사용. 메시지 전송시 직접 도메인 타입 처리 가능
+  * 메시지 전송시 지정가능 한 매개변수
+    * 메시지가 전송될 토픽 (send에 필요)
+    * 토픽 데이터를 쓰는 파티션
+    * 레코드 전송 키
+    * 타임스탬프 (default: System.currentTimeMillis)
+    * 페이로드 (메시지에 적재된 순수한 데이터)
+* Kafka 리스너 활용 메시지 수신
+  * KafkaTemplate는 메시지를 수신하는 메소드 제공 X
+  * KafkaListener 어노테이션을 지정하여 푸시모델로 데이터 수신 가능
 ***
