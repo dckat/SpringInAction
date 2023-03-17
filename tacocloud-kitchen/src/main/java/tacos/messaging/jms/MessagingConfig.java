@@ -2,12 +2,14 @@ package tacos.messaging.jms;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 
 import javax.persistence.criteria.Order;
 import java.util.HashMap;
 import java.util.Map;
 
+@Profile({"jms-template", "jms-listener"})
 @Configuration
 public class MessagingConfig {
     @Bean
