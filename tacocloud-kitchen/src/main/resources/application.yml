@@ -13,7 +13,7 @@ spring:
 
 ---
 spring:
-  profiles: rabbit-template, rabbit-listener
+  profiles: rabbitmq-template, rabbitmq-listener
   rabbitmq:
     template:
       receive-timeout: 2
