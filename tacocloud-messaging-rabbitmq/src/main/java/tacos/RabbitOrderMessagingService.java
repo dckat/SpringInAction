@@ -1,6 +1,5 @@
-package tacos.send;
+package tacos;
 
-import ch.qos.logback.classic.pattern.MessageConverter;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -9,6 +8,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tacos.Order;
+import tacos.OrderMessagingService;
 
 @Service
 public class RabbitOrderMessagingService implements OrderMessagingService {
