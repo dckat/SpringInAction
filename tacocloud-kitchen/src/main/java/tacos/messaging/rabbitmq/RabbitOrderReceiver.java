@@ -1,4 +1,4 @@
-package tacos.receive;
+package tacos.messaging.rabbitmq;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

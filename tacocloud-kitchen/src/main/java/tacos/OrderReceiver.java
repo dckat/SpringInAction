@@ -1,4 +1,4 @@
-package tacos.receive;
+package tacos;
 
 import tacos.Order;
 
