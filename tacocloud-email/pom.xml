@@ -19,7 +19,7 @@
     </properties>
 
     <dependencies>
-        <dependency>정
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
