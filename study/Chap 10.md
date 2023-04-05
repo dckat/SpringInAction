@@ -81,3 +81,39 @@
     * Subscription: Publisher-Subscriber간 데이터 교환하도록 연결
     * Processor: Publisher.Subscriber 모두 상속받은 인터페이스
 ***
+## 10.2. 리액터
+* 스프링 리액터
+  * 스프링에서 리액티브 프로그래밍을 위한 모듈
+  * 코드 비교 (예시)
+    * 명령형 프로그래밍
+    ```
+    String name = "Kim";
+    String capitalName = name.toUpperCase();
+    String greeting = "Hello, " + capitalName + "!";
+    System.out.println(greeting);
+    ```
+    * 리액티브 프로그래밍
+    ```
+    Mono.just("Kim")
+        .map(n -> n.toUpperCase())
+        .map(cn -> "Hello, " + cn + "!")
+        .subscribe(System.out::println);
+    ```
+  * 기본 타입
+    * Flux: 0.1 또는 다수의 데이터를 갖는 타입
+    * Mono: 하나의 데이터 항목만 갖는 타입
+* 리액티브 플로우 다이어그램
+  * 마블 다이어그램으로 표현
+    * 상단: Flux나 Mono를 통해 전달되는 데이터의 타임라인
+    * 중앙: 오퍼레이션
+    * 하단: 결과로 생성되는 Flux나 Mono의 타임라인
+  * 다이어그램 예시
+
+* 의존성 추가
+```
+<dependency>
+  <groupId>io.projectreactor</groupId>
+  <artifactId>reactor-core</artifactId>
+</dependency>
+```
+***
