@@ -108,7 +108,7 @@
     * 중앙: 오퍼레이션
     * 하단: 결과로 생성되는 Flux나 Mono의 타임라인
   * 다이어그램 예시
-  
+  ![그림](https://user-images.githubusercontent.com/19167273/230038913-ad97c197-7157-448e-bbd3-f69cf47654de.png)
 * 리액터 의존성 추가
   ```
   <dependency>
