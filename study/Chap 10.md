@@ -58,7 +58,7 @@
   * 정의: Back Pressure로 비동기 요소들 사이의 상호작용을 정의한 스펙
   * 주요 개념
     * Streaming
-    ![img.png](img.png)
+    ![img](https://user-images.githubusercontent.com/19167273/230029803-a9cda839-155f-4bd2-a409-e7e6d66cb692.png)
       * 전통적인 데이터 처리 방식: 요청에 대한 데이터를 모두 저장하여 응답 전송
         * 한 요청의 데이터가 많을 경우: out of memory 이슈 발생 가능성
         * 동시에 수많은 요청 발생하는 경우: 다량의 Garbage Collection 발생 가능성
@@ -75,7 +75,7 @@
       * 자바 스트림: 대개 동기화. 한정된 데이터로 작업 수행
       * 리액티브 스트림: 비동기 처리 지원. 무한 데이터셋의 처리
   * 주요 인터페이스
-  ![img_1.png](img_1.png)
+  ![img_1](https://user-images.githubusercontent.com/19167273/230029852-6659eb94-89f1-4a04-b2a5-5d64e084c119.png)
     * Publisher: 데이터 생성. Subscriber에게 데이터 전달
     * Subscriber: 데이터 구독. 전달받은 데이터를 처리
     * Subscription: Publisher-Subscriber간 데이터 교환하도록 연결
