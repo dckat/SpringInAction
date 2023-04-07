@@ -117,3 +117,41 @@
   </dependency>
   ```
 ***
+## 10.3. 리액티브 오퍼레이션 적용하기
+* 리액티브 프로그래밍에서의 오퍼레이션 분류
+  * 생성(Creation)
+  * 조합(Combination)
+  * 변환(Transformation)
+  * 로직(Logic)
+* 생성 오퍼레이션
+  * just: 리액티브 타입 생성
+  * fromArray: 배열로부터 리액티브 생성
+  * fromIterable: List.Set.Iterable 등의 컬렉션으로부터 생성
+  * fromStream: 스트림 객체로부터 생성
+  * range: 1씩 증가하는 리액티브 생성
+  * interval: 시간간격.주기에 따라 증가하는 리액티브 생성
+* 조합 오퍼레이션
+  * mergeWith: 2개의 Flux 스트림을 하나의 Flux로 병합하여 생성
+  * zip: 각 Flux로 부터 한 항목씩 번갈아가면서 새로운 Flux 생성
+  * first: 2개의 Flux 중 먼저 값을 방출하는 소스 Flux를 가져와서 Flux 생성
+* 변환 오퍼레이션
+  * skip: 앞에서부터 일부 갯수나 시간만큼 건너뛰어 새로운 Flux를 갖도록 생성
+  * take: 앞에서부터 일부 갯수만큼 새로운 Flux를 갖도록 방출
+  * filter: 조건에 기반하여 일부만큼 새로운 Flux 방출
+  * distinct: 중복을 제거하여 새로운 Flux 방출
+  * map / flatMap: 발행된 항목을 다른 형태나 타입으로 매핑
+    * map: 동기적으로(순차적으로) 매핑이 수행
+    * flatMap: 비동기적으로(병행 처리) 매핑이 수행 → 동시성을 위해 Schedulers 활용
+      * Schedulers 동시성 모델
+        * immediate: 현재 스레드에서 구독 실행
+        * single: 단일 재사용 가능한 스레드에서 구독 실행
+        * newSingle: 매 호출마다 전용 스레드에서 구독 실행
+        * elastic: 무한하고 신축성 있는 풀에서 가져온 작업 스레드에서 구독 실행
+        * parallel: 고정된 크기의 풀에서 가져온 스레드에서 구독 실행 (크기: CPU 코어의 갯수)
+  * buffer: 데이터 스트림을 일정 갯수만큼 분할
+  * collectMap / collectList: 모든 항목을 List(또는 Map)으로 수집
+* 로직 오퍼레이션
+  * all: 모든 요소가 조건을 충족하는지에 대한 로직 연산 수행
+  * any: 최소 하나의 요소가 조건을 충족하는지에 대한 로직 연산 수행
+* [리액터 연산 예제 코드 참조](https://github.com/dckat/refactorTest)
+***
