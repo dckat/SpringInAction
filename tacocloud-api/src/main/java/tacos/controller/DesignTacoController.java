@@ -8,6 +8,8 @@ import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import tacos.Taco;
 import tacos.TacoRepository;
 import tacos.resource.TacoResource;
@@ -38,6 +40,7 @@ public class DesignTacoController {
         return tacoRepository.findAll(page).getContent();
     } */
 
+    /*
     @GetMapping("/recent")
     public CollectionModel<TacoResource> recentTacos() {
         PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
@@ -50,8 +53,14 @@ public class DesignTacoController {
                         .withRel("recents"));
 
         return recentResources;
+    } */
+
+    @GetMapping("/recent")
+    public Flux<Taco> recentTacos() {
+        return Flux.fromIterable(tacoRepository.findAll()).take(12);
     }
 
+    /*
     @GetMapping("/{id}")
     public Taco tacoById(@PathVariable("id") Long id) {
         Optional<Taco> optTaco = tacoRepository.findById(id);
@@ -60,11 +69,23 @@ public class DesignTacoController {
             return optTaco.get();
         }
         return null;
+    } */
+
+    @GetMapping("/{id}")
+    public Mono<Taco> tacoById(@PathVariable("id") Long id) {
+        return tacoRepository.findById(id);
     }
 
+    /*
     @PostMapping(consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public Taco postTaco(@RequestBody Taco taco) {
         return tacoRepository.save(taco);
+    } */
+
+    @PostMapping(consumes="application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Taco> postTaco(@RequestBody Mono<Taco> tacoMono) {
+        return tacoRepository.saveAll(tacoMono).next();
     }
 }
